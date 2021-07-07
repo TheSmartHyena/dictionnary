@@ -2,14 +2,10 @@ import { Module } from '@nestjs/common';
 import { WordService } from './word.service';
 import { WordController } from './word.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { Word } from './entities/word.entity';
 
 @Module({
-  imports: [TypeOrmModule.forRoot({
-    type: 'sqlite',
-    database: 'db',
-    entities: [__dirname + '/**/*.entity{.ts,.js}'],
-    synchronize: true,
-  }),],
+  imports: [TypeOrmModule.forFeature([Word])],
   controllers: [WordController],
   providers: [WordService]
 })

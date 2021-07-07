@@ -1,14 +1,22 @@
 import { Injectable, Logger, HttpException, HttpStatus } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { WordDto } from './dto/word.dto';
+import { Word } from './entities/word.entity';
 import * as data from './words.json'
 
 @Injectable()
 export class WordService {
   private readonly myLogger = new Logger(WordService.name);
 
-  constructor() {
-    data.words.forEach(word => {
-      // this.myLogger.log(word);
+  constructor(
+    @InjectRepository(Word)
+    private wordsRepository: Repository<Word>,
+  ) {
+    data.words.forEach(async (word)=> {
+      await this.wordsRepository.insert({ 
+        value: word
+      });
     });
   }
 
@@ -27,8 +35,14 @@ export class WordService {
     }
   }
 
-  validate(word: string): any {
-    return {"word": word, "actionType": "validate", "result": false};
+  async validate(word: string) {
+
+    const result = await this.wordsRepository.findOne({ value: word });
+    if (result) {
+      return {"word": word, "actionType": "validate", "result": true};
+    } else {
+      return {"word": word, "actionType": "validate", "result": false};
+    }    
   }
 
   search(word: string): any {
