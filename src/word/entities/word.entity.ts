@@ -1,1 +1,10 @@
-export class Word {}
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+
+@Entity()
+export class Word {
+    @PrimaryGeneratedColumn()
+    id: number;
+
+    @Column()
+    value: string
+}

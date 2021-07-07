@@ -1,26 +1,37 @@
-import { Injectable } from '@nestjs/common';
-import { CreateWordDto } from './dto/create-word.dto';
-import { UpdateWordDto } from './dto/update-word.dto';
+import { Injectable, Logger, HttpException, HttpStatus } from '@nestjs/common';
+import { WordDto } from './dto/word.dto';
+import * as data from './words.json'
 
 @Injectable()
 export class WordService {
-  create(createWordDto: CreateWordDto) {
-    return 'This action adds a new word';
+  private readonly myLogger = new Logger(WordService.name);
+
+  constructor() {
+    data.words.forEach(word => {
+      // this.myLogger.log(word);
+    });
   }
 
-  findAll() {
-    return `This action returns all word`;
+  handleRequest(wordDto: WordDto) {
+    switch(wordDto.actionType) {
+      case 'validate':
+        return this.validate(wordDto.word);
+        break;
+      case 'search':
+        return this.search(wordDto.word);
+        break;
+      default:
+        const completeMsg = `Action type not recognised: ${wordDto.actionType}`;
+        this.myLogger.error(completeMsg);
+        throw new HttpException(completeMsg, HttpStatus.UNPROCESSABLE_ENTITY)
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} word`;
+  validate(word: string): any {
+    return {"word": word, "actionType": "validate", "result": false};
   }
 
-  update(id: number, updateWordDto: UpdateWordDto) {
-    return `This action updates a #${id} word`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} word`;
+  search(word: string): any {
+    return {"word": word, "actionType": "search", "result": []};
   }
 }
