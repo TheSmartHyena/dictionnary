@@ -8,11 +8,10 @@ import { Word } from './word/entities/word.entity';
 
 @Module({
   imports: [WordModule, TypeOrmModule.forRoot({
-    type: 'sqlite',
-    database: 'db',
+    type: 'better-sqlite3',
+    database: 'db.sql',
     entities: [Word],
-    synchronize: true,
-    name: "Word"
+    synchronize: true
   })],
   controllers: [AppController],
   providers: [AppService],

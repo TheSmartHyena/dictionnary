@@ -7,8 +7,5 @@ import { IsString } from "class-validator"
  */
 export class WordDto {
     @IsString()
-    readonly actionType: string;
-    
-    @IsString()
     readonly word: string;
 }
